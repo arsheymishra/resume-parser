@@ -47,7 +47,7 @@ export default function ResumeForm() {
     <main className="flex flex-col items-center justify-center min-h-screen p-6 bg-gradient-to-br from-blue-50 to-white">
       <div className="max-w-xl w-full bg-white rounded-3xl shadow-2xl p-8 transition-all">
         <h1 className="text-gray-900 text-3xl font-bold mb-6 text-center tracking-tight">
-          ✨ AI Resume Parser
+          Resume Parser
         </h1>
 
         <input
@@ -77,25 +77,25 @@ export default function ResumeForm() {
               📄 Resume Summary
             </h2>
             <p>
-              <strong>👤 Name:</strong> {data.name}
+              <strong> Name:</strong> {data.name}
             </p>
             <p>
-              <strong>📧 Email:</strong> {data.email}
+              <strong> Email:</strong> {data.email}
             </p>
             <p>
-              <strong>📞 Phone:</strong> {data.phone}
+              <strong> Phone:</strong> {data.phone}
             </p>
             <p>
-              <strong>🎓 Education:</strong> {data.education}
+              <strong> Education:</strong> {data.education}
             </p>
             <p>
-              <strong>💼 Experience:</strong> {data.experience_years}
+              <strong> Experience:</strong> {data.experience_years}
             </p>
             <p>
-              <strong>🚰 Skills:</strong> {data.skills?.join(", ")}
+              <strong> Skills:</strong> {data.skills?.join(", ")}
             </p>
             <p>
-              <strong>🧑‍💻 Suggested Roles:</strong> {data.suggested_roles?.join(", ")}
+              <strong> Suggested Roles:</strong> {data.suggested_roles?.join(", ")}
             </p>
           </div>
         )}

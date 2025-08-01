@@ -1,13 +1,6 @@
-import OpenAI from "openai";
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
-const openai = new OpenAI({
-  baseURL: "https://openrouter.ai/api/v1",
-  apiKey: process.env.OPENROUTER_API_KEY!,
-  defaultHeaders: {
-    "HTTP-Referer": process.env.SITE_URL || "http://localhost:3000",
-    "X-Title": process.env.SITE_NAME || "Resume Parser",
-  },
-});
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 export async function extractFieldsFromResume(fullText: string) {
   const trimmedText = fullText.slice(0, 3000);
@@ -35,19 +28,17 @@ Return only JSON. Do not explain anything.
 `;
 
   try {
-    const completion = await openai.chat.completions.create({
-      model: "mistralai/devstral-small:free",
-      messages: [{ role: "user", content: prompt }],
-    });
+    const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' });
 
-    const content = completion.choices?.[0]?.message?.content || "";
-    // console.log("Raw model response:", content);
+    const result = await model.generateContent(prompt);
+    const response = await result.response;
+    const content = response.text();
 
-    const jsonStart = content.indexOf("{");
-    const jsonEnd = content.lastIndexOf("}") + 1;
+    const jsonStart = content.indexOf('{');
+    const jsonEnd = content.lastIndexOf('}') + 1;
 
     if (jsonStart === -1 || jsonEnd === -1) {
-      throw new Error("No JSON found in model response");
+      throw new Error('No JSON found in model response');
     }
 
     const jsonText = content.slice(jsonStart, jsonEnd);
@@ -56,14 +47,14 @@ Return only JSON. Do not explain anything.
       return JSON.parse(jsonText);
     } catch {
       const cleaned = jsonText
-        .replace(/,\s*}/g, "}")
-        .replace(/,\s*]/g, "]")
-        .replace(/\n/g, " ")
-        .replace(/\s+/g, " ");
+        .replace(/,\s*}/g, '}')
+        .replace(/,\s*]/g, ']')
+        .replace(/\n/g, ' ')
+        .replace(/\s+/g, ' ');
       return JSON.parse(cleaned);
     }
   } catch (err: any) {
-    console.error("OpenRouter extraction error:", err?.message || err);
-    return { error: "Failed to extract fields" };
+    console.error('❌ Gemini extraction error:', err.message || err);
+    return { error: 'Failed to extract fields' };
   }
 }
